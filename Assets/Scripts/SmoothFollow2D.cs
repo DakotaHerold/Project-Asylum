@@ -4,8 +4,8 @@ using System.Collections;
 
 // Code modified from Scott's answer here http://answers.unity3d.com/questions/29183/2d-camera-smooth-follow.html 
 
-public class SmoothFollow2D : MonoBehaviour {
-
+public class SmoothFollow2D : MonoBehaviour
+{
     public float dampTime = 0.15f;
     private Vector3 velocity = Vector3.zero;
     public Transform target;
@@ -15,14 +15,12 @@ public class SmoothFollow2D : MonoBehaviour {
     {
 
     }
-
-    
+	
 
     // Update is called once per frame
     void Update()
     {
-
-        if (target && followCamera)
+    	if (target && followCamera)
         {             
             Vector3 targetPos = target.position;
             //targetPos.y = targetPos.y - 0.6f; 
@@ -32,7 +30,5 @@ public class SmoothFollow2D : MonoBehaviour {
             Vector3 destination = transform.position + delta;
             transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, dampTime);
         }
-        
-
     }
 }
