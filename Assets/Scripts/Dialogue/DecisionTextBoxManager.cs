@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI; 
 
-public class TextBoxManager : MonoBehaviour {
+public class DecisionTextBoxManager : MonoBehaviour {
 
     public GameObject textBox;
 
@@ -30,6 +30,10 @@ public class TextBoxManager : MonoBehaviour {
         }
         //theText.text = textLines[currentLine];
         StartCoroutine(TextScoll(textLines[currentLine]));
+        //if(endAtLine == 0)
+        //{
+        //    endAtLine = textLines.Length - 1; 
+        //}
     }
 
     // Update is called once per frame
