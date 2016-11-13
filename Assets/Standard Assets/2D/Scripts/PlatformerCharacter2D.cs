@@ -66,6 +66,8 @@ namespace UnityStandardAssets._2D
                 }
             }
 
+			print(move);
+
             // Set whether or not the character is crouching in the animator
             m_Anim.SetBool("Crouch", crouch);
 
@@ -79,8 +81,8 @@ namespace UnityStandardAssets._2D
                 m_Anim.SetFloat("Speed", Mathf.Abs(move));
 
                 // Move the character
-                m_Rigidbody2D.velocity = new Vector2(move*m_MaxSpeed, m_Rigidbody2D.velocity.y);
-				//m_Rigidbody2D.AddForce(new Vector2(move*m_MaxSpeed, 0f));
+                //m_Rigidbody2D.velocity = new Vector2(move*m_MaxSpeed, m_Rigidbody2D.velocity.y);
+				m_Rigidbody2D.AddForce(new Vector2(move*m_MaxSpeed, 0f));
 
                 // If the input is moving the player right and the player is facing left...
                 if (move > 0 && !m_FacingRight)

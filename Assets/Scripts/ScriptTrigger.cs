@@ -2,41 +2,41 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class SceneChanger : MonoBehaviour {
+[RequireComponent(typeof (GameScript))]
+public class ScriptTrigger: MonoBehaviour
+{
+	//public Script sceneName;
 
-    public string sceneName;
+	private bool inTrigger=false;
+	private GameScript s=null;
 
-    private bool inTrigger = false; 
 	// Use this for initialization
-	void Start () {
-
+	void Start()
+	{
+		s=gameObject.GetComponent<GameScript>();
 	}
-	
+
 	// Update is called once per frame
-	void Update () {
-        Debug.Log(sceneName);
-        if (inTrigger && sceneName != "")
-        {
-            if (Input.GetKeyDown(KeyCode.Return))
-            {
-                SceneManager.LoadScene(sceneName);
-            }
-        }
-    }
+	void Update()
+	{
+		if(inTrigger && s!=null)
+		{
+			s.Run();
+		}
+	}
 
-    void FixedUpdate()
-    {
-        
-        
-    }
+	void FixedUpdate()
+	{
+		
+	}
 
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        inTrigger = true;
-    }
+	void OnTriggerEnter2D(Collider2D other)
+	{
+		inTrigger=true && (other.name=="Player");
+	}
 
-    void OnTriggerExit2D(Collider2D other)
-    {
-        inTrigger = false;
-    }
+	void OnTriggerExit2D(Collider2D other)
+	{
+		inTrigger=false;
+	}
 }
