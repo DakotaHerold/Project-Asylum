@@ -20,16 +20,17 @@ public class CharacterController : MonoBehaviour {
     Animator anim;
 
     // Use this for initialization
-    void Start () {
-        //Gets the Character's Animator for its variables
-        anim = GetComponent<Animator>();
+    void Start ()
+	{
+		//Gets the Character's Animator for its variables
+		anim=GetComponent<Animator>();
 
-        inventory = new List<string>();
-        if (TextNotifier != null)
-        {
-            notification = TextNotifier.GetComponent<NotifyText>(); 
-        }
-    }
+		inventory=new List<string>();
+		if(TextNotifier!=null)
+		{
+			notification=TextNotifier.GetComponent<NotifyText>(); 
+		}
+	}
 	
 	// Update is called once per frame
 	//void Update () {
@@ -38,28 +39,33 @@ public class CharacterController : MonoBehaviour {
 
     void FixedUpdate()
     {
-        float move = 0.0f; 
-        if (canMove)
-        {
-            move = Input.GetAxis("Horizontal");
-        }
-
-        // Update animation 
-        anim.SetFloat("Speed", Mathf.Abs(move));
-
-        GetComponent<Rigidbody2D>().velocity = new Vector2(move * maxSpeed, GetComponent<Rigidbody2D>().velocity.y);
-
-        if(move > 0 && !facingRight)
-        {
-            Flip(); 
-        }
-        else if(move < 0 && facingRight)
-        {
-            Flip(); 
-        }
-
-        
+		int move = Input.GetAxis("Horizontal");
+		Move(move);
     }
+
+	public void Move(float move)
+	{
+		//float move = 0.0f; 
+
+		if(!canMove)
+		{
+			return;
+		}
+
+		// Update animation 
+		anim.SetFloat("Speed", Mathf.Abs(move));
+
+		GetComponent<Rigidbody2D>().velocity=new Vector2(move * maxSpeed, GetComponent<Rigidbody2D>().velocity.y);
+
+		if(move > 0 && !facingRight)
+		{
+			Flip(); 
+		}
+		else if(move < 0 && facingRight)
+		{
+			Flip(); 
+		}
+	}
 
     void Flip()
     {
