@@ -39,31 +39,35 @@ public class CharacterController : MonoBehaviour
 
     void FixedUpdate()
     {
-        float move = Input.GetAxis("Horizontal");
-        // Update animation 
-        anim.SetFloat("Speed", Mathf.Abs(move));
+        float moveX = Input.GetAxis("Horizontal");
+        float moveY = Input.GetAxis("Vertical");
+
         if (!canMove)
         {
+            anim.SetFloat("Speed", Mathf.Abs(0.0f));
             return;
         }
-
-        Move(move);
+        // Update animation 
+        anim.SetFloat("Speed", Mathf.Abs(moveX + moveY));
+        
+        Move(moveX, moveY);
     }
 
-	public void Move(float move)
+	public void Move(float moveX, float moveY)
 	{
         if (!canMove)
         {
+            anim.SetFloat("Speed", Mathf.Abs(0.0f));
             return;
         }
 
-        GetComponent<Rigidbody2D>().velocity=new Vector2(move * maxSpeed, GetComponent<Rigidbody2D>().velocity.y);
+        GetComponent<Rigidbody2D>().velocity=new Vector2(moveX * maxSpeed, moveY * maxSpeed);
 
-		if(move > 0 && !facingRight)
+		if(moveX > 0 && !facingRight)
 		{
 			Flip(); 
 		}
-		else if(move < 0 && facingRight)
+		else if(moveX < 0 && facingRight)
 		{
 			Flip(); 
 		}
