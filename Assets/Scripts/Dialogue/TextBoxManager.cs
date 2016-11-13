@@ -13,6 +13,8 @@ public class TextBoxManager : MonoBehaviour {
     public TextAsset textFile;
     public string[] textLines;
 
+    public GameObject buttonPanel;
+
     public int currentLine;
     //public int endAtLine; 
 
@@ -25,12 +27,19 @@ public class TextBoxManager : MonoBehaviour {
 
     public float textSpeed;
 
-    private CharacterController controller; 
+    private CharacterController controller;
+
+    private CreateButtons buttons; 
 
     // Use this for initialization
     void Start()
     {
         textBox.SetActive(false);
+
+        if(buttonPanel != null)
+        {
+            buttons = buttonPanel.GetComponent<CreateButtons>(); 
+        }
     }
 
     // Update is called once per frame
@@ -51,10 +60,19 @@ public class TextBoxManager : MonoBehaviour {
             if (!isTyping)
             {
                 currentLine += 1;
-                if (currentLine > textLines.Length - 1)
+
+                
+                //At End?
+                if (currentLine > textLines.Length - 1 && buttons == null)
                 {
-                    controller.canMove = true; 
+                    controller.canMove = true;
                     DisableTextBox();
+                }
+                else if (currentLine > textLines.Length - 2 && buttons != null)
+                {
+                    buttons.InitializeButtons();
+                    StartCoroutine(TextScoll(textLines[currentLine]));
+                    isActive = false; 
                 }
                 else
                 {

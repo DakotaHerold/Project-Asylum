@@ -9,35 +9,17 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public string[] choices;
     public GameObject buttonPrefab;
+    public GameObject parentPanel;
+    public GameObject player; 
 
     private Button[] buttons;
     private int selectedIndex = 0;
     private bool hovering = false;
-    public bool buttonsActive = true; 
+    public bool buttonsActive = false; 
 
     // Use this for initialization
     void Start () {
-	    for (int i = 0; i < choices.Length; ++i)
-        {
-            // create button
-            GameObject obj = Instantiate(buttonPrefab);
-            // attach to parent
-            obj.transform.SetParent(transform, false);
-            // set text
-            obj.GetComponentInChildren<Text>().text = choices[i];
-            // add on clicked event listener
-            Button button = obj.GetComponent<Button>();
-            int evaluationChoice = i; 
-            button.onClick.AddListener(() => EvaluateChoice(evaluationChoice));
-            //button.OnPointerEnter.AddListener(() => SetSelectedIndex(int index));
-
-            //Add button objects for management 
-        }
-
-        // Sets references to active buttons 
-        buttons = GetComponentsInChildren<Button>();
-
-        //buttons[selectedIndex].Select();
+	    
     }
 	
 	// Update is called once per frame
@@ -107,9 +89,10 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             case 2:
                 Debug.Log("Cancel");
                 break;
-
         }
-        
+        parentPanel.SetActive(false);
+        CharacterController controller = player.GetComponent<CharacterController>();
+        controller.canMove = true; 
     }
 
     void SetSelectedIndex(int index)
@@ -127,17 +110,8 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         hovering = false; 
     }
 
-    void ReinitializeButtons(string[] newChoices)
+    public void InitializeButtons()
     {
-        buttonsActive = false; 
-        choices = newChoices;
-        Button[] oldButtons = GetComponentsInChildren<Button>();
-        foreach(Button b in oldButtons)
-        {
-            DestroyObject(b); 
-        }
-
-        // Reinitialize 
         for (int i = 0; i < choices.Length; ++i)
         {
             // create button
@@ -157,6 +131,9 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
         // Sets references to active buttons 
         buttons = GetComponentsInChildren<Button>();
+
+        //buttons[selectedIndex].Select();
         buttonsActive = true; 
     }
+    
 }
