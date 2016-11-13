@@ -8,39 +8,28 @@ using System;
 public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 
     public string[] choices;
+    public string[] outcomes; 
     public GameObject buttonPrefab;
+    public GameObject parentPanel;
+    public GameObject player; 
 
     private Button[] buttons;
     private int selectedIndex = 0;
-    private bool hovering = false; 
+    private bool hovering = false;
+    public bool buttonsActive = false; 
 
     // Use this for initialization
     void Start () {
-	    for (int i = 0; i < choices.Length; ++i)
-        {
-            // create button
-            GameObject obj = Instantiate(buttonPrefab);
-            // attach to parent
-            obj.transform.SetParent(transform, false);
-            // set text
-            obj.GetComponentInChildren<Text>().text = choices[i];
-            // add on clicked event listener
-            Button button = obj.GetComponent<Button>();
-            int evaluationChoice = i; 
-            button.onClick.AddListener(() => EvaluateChoice(evaluationChoice));
-            //button.OnPointerEnter.AddListener(() => SetSelectedIndex(int index));
-
-            //Add button objects for management 
-        }
-
-        // Sets references to active buttons 
-        buttons = GetComponentsInChildren<Button>();
-
-        //buttons[selectedIndex].Select();
+	    
     }
 	
 	// Update is called once per frame
 	void Update () {
+
+        if(!buttonsActive)
+        {
+            return;
+        }
 
         // Are they mousing over it?
         if (hovering)
@@ -51,8 +40,6 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         {
             buttons[selectedIndex].Select();
         }
-        
-        
         
 
         if (Input.GetKeyDown(KeyCode.RightArrow))
@@ -92,20 +79,26 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     void EvaluateChoice(int choice)
     {
         //Debug.Log(choice); 
-        switch (choice)
-        {
-            case 0:
-                Debug.Log("Yes");
-                break;
-            case 1:
-                Debug.Log("No");
-                break;
-            case 2:
-                Debug.Log("Cancel");
-                break;
+        //switch (choice)
+        //{
+        //    case 0:
+        //        Debug.Log("Yes");
+        //        break;
+        //    case 1:
+        //        Debug.Log("No");
+        //        break;
+        //    case 2:
+        //        Debug.Log("Cancel");
+        //        break;
+        //}
+        parentPanel.SetActive(false);
+        CharacterController controller = player.GetComponent<CharacterController>();
+        controller.canMove = true;
 
+        if (outcomes[choice] != null && outcomes[choice] != "")
+        {
+            controller.AddToInventory(outcomes[choice]);
         }
-        
     }
 
     void SetSelectedIndex(int index)
@@ -122,4 +115,31 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         hovering = false; 
     }
+
+    public void InitializeButtons()
+    {
+        for (int i = 0; i < choices.Length; ++i)
+        {
+            // create button
+            GameObject obj = Instantiate(buttonPrefab);
+            // attach to parent
+            obj.transform.SetParent(transform, false);
+            // set text
+            obj.GetComponentInChildren<Text>().text = choices[i];
+            // add on clicked event listener
+            Button button = obj.GetComponent<Button>();
+            int evaluationChoice = i;
+            button.onClick.AddListener(() => EvaluateChoice(evaluationChoice));
+            //button.OnPointerEnter.AddListener(() => SetSelectedIndex(int index));
+
+            //Add button objects for management 
+        }
+
+        // Sets references to active buttons 
+        buttons = GetComponentsInChildren<Button>();
+
+        //buttons[selectedIndex].Select();
+        buttonsActive = true; 
+    }
+    
 }

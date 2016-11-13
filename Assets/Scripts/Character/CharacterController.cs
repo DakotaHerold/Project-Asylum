@@ -1,13 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic; 
 
 public class CharacterController : MonoBehaviour {
 
     //Attributes
     public float maxSpeed;
     public float minSpeed;
+    public bool canMove = true;
+
+    public GameObject TextNotifier; 
+
     private Rigidbody2D body;
-    private bool facingRight = true; 
+    private bool facingRight = true;
+
+    private List<string> inventory;
+    private NotifyText notification; 
 
     Animator anim;
 
@@ -15,6 +23,12 @@ public class CharacterController : MonoBehaviour {
     void Start () {
         //Gets the Character's Animator for its variables
         anim = GetComponent<Animator>();
+
+        inventory = new List<string>();
+        if (TextNotifier != null)
+        {
+            notification = TextNotifier.GetComponent<NotifyText>(); 
+        }
     }
 	
 	// Update is called once per frame
@@ -24,7 +38,11 @@ public class CharacterController : MonoBehaviour {
 
     void FixedUpdate()
     {
-        float move = Input.GetAxis("Horizontal");
+        float move = 0.0f; 
+        if (canMove)
+        {
+            move = Input.GetAxis("Horizontal");
+        }
 
         // Update animation 
         anim.SetFloat("Speed", Mathf.Abs(move));
@@ -49,5 +67,24 @@ public class CharacterController : MonoBehaviour {
         Vector3 newScale = transform.localScale;
         newScale.x *= -1;
         transform.localScale = newScale; 
+    }
+
+    public void AddToInventory(string obj)
+    {       
+        if (notification != null)
+        {
+            
+            notification.StartCoroutine(notification.UpdateText(obj + " added to inventory")); 
+        }
+        inventory.Add(obj);
+    }
+
+    public void RemoveFromInventory(string obj)
+    {
+        if (notification != null)
+        {
+            notification.StartCoroutine(notification.UpdateText(obj + " removed from inventory"));
+        }
+        inventory.Add(obj);
     }
 }
