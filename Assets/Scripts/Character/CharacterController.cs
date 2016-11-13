@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Collections.Generic; 
 
-public class CharacterController : MonoBehaviour {
-
+public class CharacterController : MonoBehaviour
+{
     //Attributes
     public float maxSpeed;
     public float minSpeed;
@@ -39,14 +39,12 @@ public class CharacterController : MonoBehaviour {
 
     void FixedUpdate()
     {
-		int move = Input.GetAxis("Horizontal");
+		float move = Input.GetAxis("Horizontal");
 		Move(move);
     }
 
 	public void Move(float move)
 	{
-		//float move = 0.0f; 
-
 		if(!canMove)
 		{
 			return;
