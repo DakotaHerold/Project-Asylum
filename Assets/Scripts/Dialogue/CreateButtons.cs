@@ -12,7 +12,8 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private Button[] buttons;
     private int selectedIndex = 0;
-    private bool hovering = false; 
+    private bool hovering = false;
+    public bool buttonsActive = true; 
 
     // Use this for initialization
     void Start () {
@@ -42,6 +43,11 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 	// Update is called once per frame
 	void Update () {
 
+        if(!buttonsActive)
+        {
+            return;
+        }
+
         // Are they mousing over it?
         if (hovering)
         {
@@ -51,8 +57,6 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         {
             buttons[selectedIndex].Select();
         }
-        
-        
         
 
         if (Input.GetKeyDown(KeyCode.RightArrow))
@@ -121,5 +125,38 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public void OnPointerExit(PointerEventData eventData)
     {
         hovering = false; 
+    }
+
+    void ReinitializeButtons(string[] newChoices)
+    {
+        buttonsActive = false; 
+        choices = newChoices;
+        Button[] oldButtons = GetComponentsInChildren<Button>();
+        foreach(Button b in oldButtons)
+        {
+            DestroyObject(b); 
+        }
+
+        // Reinitialize 
+        for (int i = 0; i < choices.Length; ++i)
+        {
+            // create button
+            GameObject obj = Instantiate(buttonPrefab);
+            // attach to parent
+            obj.transform.SetParent(transform, false);
+            // set text
+            obj.GetComponentInChildren<Text>().text = choices[i];
+            // add on clicked event listener
+            Button button = obj.GetComponent<Button>();
+            int evaluationChoice = i;
+            button.onClick.AddListener(() => EvaluateChoice(evaluationChoice));
+            //button.OnPointerEnter.AddListener(() => SetSelectedIndex(int index));
+
+            //Add button objects for management 
+        }
+
+        // Sets references to active buttons 
+        buttons = GetComponentsInChildren<Button>();
+        buttonsActive = true; 
     }
 }

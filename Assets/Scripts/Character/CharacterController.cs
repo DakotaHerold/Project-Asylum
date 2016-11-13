@@ -6,8 +6,11 @@ public class CharacterController : MonoBehaviour {
     //Attributes
     public float maxSpeed;
     public float minSpeed;
+    public bool canMove = true; 
     private Rigidbody2D body;
-    private bool facingRight = true; 
+    private bool facingRight = true;
+
+    private ArrayList inventory; 
 
     Animator anim;
 
@@ -24,7 +27,11 @@ public class CharacterController : MonoBehaviour {
 
     void FixedUpdate()
     {
-        float move = Input.GetAxis("Horizontal");
+        float move = 0.0f; 
+        if (canMove)
+        {
+            move = Input.GetAxis("Horizontal");
+        }
 
         // Update animation 
         anim.SetFloat("Speed", Mathf.Abs(move));
@@ -49,5 +56,10 @@ public class CharacterController : MonoBehaviour {
         Vector3 newScale = transform.localScale;
         newScale.x *= -1;
         transform.localScale = newScale; 
+    }
+
+    void AddToInventory(GameObject obj)
+    {
+        inventory.Add(obj);
     }
 }

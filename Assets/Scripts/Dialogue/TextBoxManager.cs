@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class TextBoxManager : MonoBehaviour {
 
+    public GameObject player;
+
     public GameObject textBox;
 
     public Text theText; 
@@ -16,20 +18,19 @@ public class TextBoxManager : MonoBehaviour {
 
     public bool isActive;
 
+    
+
     private bool isTyping = false;
     private bool cancelTyping = false;
 
-    public float textSpeed; 
+    public float textSpeed;
+
+    private CharacterController controller; 
 
     // Use this for initialization
     void Start()
     {
-        if (textFile != null)
-        {
-            textLines = (textFile.text.Split('\n'));
-        }
-        //theText.text = textLines[currentLine];
-        StartCoroutine(TextScoll(textLines[currentLine]));
+        textBox.SetActive(false);
     }
 
     // Update is called once per frame
@@ -45,13 +46,14 @@ public class TextBoxManager : MonoBehaviour {
         //{
         //    theText.text = textLines[currentLine];
         //}
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.X))
         {
             if (!isTyping)
             {
                 currentLine += 1;
                 if (currentLine > textLines.Length - 1)
                 {
+                    controller.canMove = true; 
                     DisableTextBox();
                 }
                 else
@@ -111,5 +113,32 @@ public class TextBoxManager : MonoBehaviour {
             textLines = new string[1];
             textLines = (newText.text.Split('\n'));
         }
+    }
+
+    void Initialize()
+    {
+        if (textFile != null)
+        {
+            textLines = (textFile.text.Split('\n'));
+        }
+        if (player != null)
+        {
+            controller = player.GetComponent<CharacterController>();
+            controller.canMove = false;
+        }
+        //theText.text = textLines[currentLine];
+        isActive = true;
+        StartCoroutine(TextScoll(textLines[currentLine]));
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        textBox.SetActive(true);
+        Initialize(); 
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        currentLine = 0; 
     }
 }
