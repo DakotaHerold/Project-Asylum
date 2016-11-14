@@ -1,16 +1,33 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityStandardAssets._2D;
+using UnityEngine.UI;
 
 public class TestGameScript: GameScript
 {
-	public TextAsset firstText;
-	public int startLine1;
+	public GameObject player;
+	private CharacterController controller;
 
-	public TextAsset secondText;
+	public TextAsset textFile;
+	public int startLine1;
 	public int startLine2;
 
-	private TextBoxManager textBox;
+	public string[] textLines;
+	public int currentLine;
+	//public int endAtLine; 
+
+
+	public GameObject textBox;
+	public Text theText; 
+
+	public bool isActive;
+
+	private bool isTyping = false;
+	private bool cancelTyping = false;
+
+	public float textSpeed;
+
+
 	private bool didPlay=false;
 
 
@@ -18,9 +35,11 @@ public class TestGameScript: GameScript
 	// Use this for initialization
 	void Start()
 	{
-		//FindObjectOfType<Canvas>()
-		textBox=FindObjectOfType<TextBoxManager>(); 
+		textBox.SetActive(false);
+		controller=player.GetComponent<CharacterController>();
 	}
+
+
 
 	//called by the ScriptTrigger
 	public override void Run()
@@ -31,17 +50,17 @@ public class TestGameScript: GameScript
 			return;
 
 		//tell the user what's up
-	//	textBox.ReloadScript(firstText);
-	//	textBox.currentLine=startLine1;
+		ReloadScript(textFile);
+		currentLine=startLine1;
 
 		//move the player a bit
 		GameObject player=GameObject.Find("Player");
 		CharacterController player2d=player.GetComponent<CharacterController>();
 		if(player!=null) //&& player2d!=null)
 		{
-			player2d.Move(-30f);
-			player2d.Move(-30f);
-			player2d.Move(-1f);
+			player2d.Move(-30f, 0f);
+			player2d.Move(-30f, 0);
+			player2d.Move(-1f, 0);
 			//player2d.Move(-30f, false, false);
 			//player2d.Move(-30, false, false);
 
@@ -57,12 +76,109 @@ public class TestGameScript: GameScript
 		}
 
 		//give the whole description
-		textBox.ReloadScript(secondText);
-		textBox.currentLine=startLine2;
+		ReloadScript(textFile);
+		currentLine=startLine2;
 
 		//set a flag of some sort
 		didPlay=true;
 
+		//give the user an item...
+		//...
+
+		//anything else...
+		//...
+
 	//	print("end!");
+	}
+
+
+
+
+	//stolen from TextBoxManager
+	// Update is called once per frame
+	void Update()
+	{
+		if(!isActive)
+		{
+			return;
+		}
+
+		///StartCoroutine(TextScoll(textLines[currentLine]));
+		//if (currentLine < textLines.Length)
+		//{
+		//    theText.text = textLines[currentLine];
+		//}
+		if (Input.GetKeyDown(KeyCode.X))
+		{
+			if (!isTyping)
+			{
+				currentLine += 1;
+
+
+				//At End?
+				if (currentLine > textLines.Length - 1)
+				{
+					controller.canMove = true;
+					DisableTextBox();
+				}
+				else
+				{
+					StartCoroutine(TextScroll(textLines[currentLine]));
+				}
+			}
+			else if(isTyping && !cancelTyping)
+			{
+				cancelTyping = true; 
+			}
+
+		}
+
+
+	}
+
+	private IEnumerator TextScroll (string lineOfText)
+	{
+		int letter = 0;
+		theText.text = "";
+		isTyping = true;
+		cancelTyping = false; 
+		while(isTyping && !cancelTyping && ( letter < lineOfText.Length - 1))
+		{
+			theText.text += lineOfText[letter];
+			letter += 1;
+			yield return new WaitForSeconds(textSpeed);
+		}
+		theText.text = lineOfText;
+		isTyping = false; 
+	}
+
+	public void ToggleTextBox()
+	{
+		textBox.SetActive(!textBox.activeSelf); 
+	}
+
+	public void EnableTextBox()
+	{
+		textBox.SetActive(true);
+		isActive = true;
+
+		StartCoroutine(TextScroll(textLines[currentLine]));
+	}
+
+	public void DisableTextBox()
+	{
+		textBox.SetActive(false);
+		isActive = false;
+	}
+
+	public void ReloadScript(TextAsset newText)
+	{
+		if(newText != null)
+		{
+			textLines = new string[1];
+			textLines = (newText.text.Split('\n'));
+			isActive = true;
+			controller.canMove = false;
+		}
 	}
 }
