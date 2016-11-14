@@ -16,10 +16,10 @@ public class CharacterController : MonoBehaviour
     private bool facingRight = true;
 
     private List<string> inventory;
-    private NotifyText notification; 
+    private NotifyText notification;
+    private int DP; 
 
     Animator anim;
-
     // Use this for initialization
     void Start ()
 	{
@@ -38,13 +38,25 @@ public class CharacterController : MonoBehaviour
 	
 	//}
 
+    void IdleDelayUpdate()
+    {
+
+        if (anim.GetFloat("IdleDelay") > 0)
+            anim.SetFloat("IdleDelay", anim.GetFloat("IdleDelay") - 0.1f);
+        else { 
+            anim.SetFloat("IdleDelay", Random.Range(5f, 20.0f));
+            anim.Play("IdleAnimating");
+        }
+    }
+
     void FixedUpdate()
     {
-		if(ignoreInput)
+        IdleDelayUpdate();
+        if (ignoreInput)
 			return;
 
         float moveX = Input.GetAxis("Horizontal");
-        //Debug.Log(moveX);
+        Debug.Log(moveX);
         if (Mathf.Abs(moveX) < 0.5f)
             moveX = 0;
         float moveY = Input.GetAxis("Vertical");
@@ -113,5 +125,15 @@ public class CharacterController : MonoBehaviour
             notification.StartCoroutine(notification.UpdateText(obj + " removed from inventory"));
         }
         inventory.Add(obj);
+    }
+
+    public void IncrementDP(int num)
+    {
+        DP += num; 
+    }
+
+    public void DecrementDP(int num)
+    {
+        DP -= num;
     }
 }

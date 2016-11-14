@@ -97,7 +97,19 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
         if (outcomes[choice] != null && outcomes[choice] != "")
         {
-            controller.AddToInventory(outcomes[choice]);
+            if (outcomes[choice] == "DP-")
+            {
+                controller.DecrementDP(5);
+            }
+            else if (outcomes[choice] == "DP+")
+            {
+                controller.IncrementDP(5); 
+            }
+            else
+            {
+                controller.AddToInventory(outcomes[choice]);
+            }
+            
         }
     }
 
