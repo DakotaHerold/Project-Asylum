@@ -7,7 +7,8 @@ public class CharacterController : MonoBehaviour
     //Attributes
     public float maxSpeed;
     public float minSpeed;
-    public bool canMove = true;
+	public bool canMove = true;
+	public bool ignoreInput = true;
 
     public GameObject TextNotifier; 
 
@@ -39,10 +40,13 @@ public class CharacterController : MonoBehaviour
 
     void FixedUpdate()
     {
+		if(ignoreInput)
+			return;
+
         float moveX = Input.GetAxis("Horizontal");
         float moveY = Input.GetAxis("Vertical");
 
-        if (!canMove)
+		if (!canMove)
         {
             anim.SetFloat("Speed", Mathf.Abs(0.0f));
             return;
