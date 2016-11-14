@@ -32,7 +32,7 @@ public class YATestGameScript: GameScript
 			//wait some seconds
 			yield return new WaitForSeconds(3);
 
-
+			npc.Move(0, 0);	//stop the npc
 			smoothCam.setTarget(player.transform);
 			player.canMove=true;	//unlock
 
