@@ -25,6 +25,7 @@ public class YATestGameScript: GameScript
 	{
 		if(smoothCam!=null)
 		{
+			player.Move(0, 0);	//stop player
 			player.canMove=false;	//lock
 			smoothCam.setTarget(npc.transform);
 			npc.Move(5f, 0f);
