@@ -44,17 +44,25 @@ public class CharacterController : MonoBehaviour
 			return;
 
         float moveX = Input.GetAxis("Horizontal");
+        Debug.Log(moveX);
+        if (Mathf.Abs(moveX) < 0.5f)
+            moveX = 0;
         float moveY = Input.GetAxis("Vertical");
-
-		if (!canMove)
+        if(Mathf.Abs(moveY) < 0.5f)
+            moveY = 0;
+        if (!canMove)
         {
             anim.SetFloat("Speed", Mathf.Abs(0.0f));
+            Move(0, 0);
             return;
         }
-        // Update animation 
-        anim.SetFloat("Speed", Mathf.Abs(moveX + moveY));
-        
-        Move(moveX, moveY);
+        else
+        {
+            // Update animation 
+            anim.SetFloat("Speed", Mathf.Abs(moveX) + Mathf.Abs(moveY));
+
+            Move(moveX, moveY);
+        }
     }
 
 	public void Move(float moveX, float moveY)
@@ -62,19 +70,22 @@ public class CharacterController : MonoBehaviour
         if (!canMove)
         {
             anim.SetFloat("Speed", Mathf.Abs(0.0f));
-            return;
+            GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
         }
-        anim.SetFloat("Speed", Mathf.Abs(moveX + moveY));
-        GetComponent<Rigidbody2D>().velocity=new Vector2(moveX * maxSpeed, moveY * maxSpeed);
+        else
+        {
+            anim.SetFloat("Speed", Mathf.Abs(moveX) + Mathf.Abs(moveY));
+            GetComponent<Rigidbody2D>().velocity = new Vector2(moveX * maxSpeed, moveY * maxSpeed);
 
-		if(moveX > 0 && !facingRight)
-		{
-			Flip(); 
-		}
-		else if(moveX < 0 && facingRight)
-		{
-			Flip(); 
-		}
+            if (moveX > 0 && !facingRight)
+            {
+                Flip();
+            }
+            else if (moveX < 0 && facingRight)
+            {
+                Flip();
+            }
+        }
 	}
 
     void Flip()
