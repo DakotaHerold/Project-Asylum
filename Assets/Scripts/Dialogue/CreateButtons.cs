@@ -97,13 +97,29 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
         if (outcomes[choice] != null && outcomes[choice] != "")
         {
-            if (outcomes[choice] == "DP-")
+            if (outcomes[choice] == "DP--")
             {
                 controller.DecrementDP(5);
             }
+            else if (outcomes[choice] == "DP++")
+            {
+                controller.IncrementDP(5);
+            }
+            else if (outcomes[choice] == "DP-")
+            {
+                controller.DecrementDP(1);
+            }
             else if (outcomes[choice] == "DP+")
             {
-                controller.IncrementDP(5); 
+                controller.IncrementDP(1);
+            }
+            else if (outcomes[choice] == "Enable Story")
+            {
+
+            }
+            else if (outcomes[choice][0] == 'D')
+            {
+                // Start NEW DIALOGUE
             }
             else
             {
