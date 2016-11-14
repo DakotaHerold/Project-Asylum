@@ -28,10 +28,6 @@ public class PreventLeavingGS: GameScript
 	{
 		if(genStreetScript.didTrigger())
 		{
-			//turn back
-			//...TODO
-			print("turn back!!");
-
 			player.ignoreInput=true;
 			if(monologueDone)
 			{
