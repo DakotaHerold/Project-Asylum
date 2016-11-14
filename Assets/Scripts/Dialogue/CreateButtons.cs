@@ -78,19 +78,6 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     void EvaluateChoice(int choice)
     {
-        //Debug.Log(choice); 
-        //switch (choice)
-        //{
-        //    case 0:
-        //        Debug.Log("Yes");
-        //        break;
-        //    case 1:
-        //        Debug.Log("No");
-        //        break;
-        //    case 2:
-        //        Debug.Log("Cancel");
-        //        break;
-        //}
         parentPanel.SetActive(false);
         CharacterController controller = player.GetComponent<CharacterController>();
         controller.canMove = true;
@@ -125,7 +112,6 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             {
                 controller.AddToInventory(outcomes[choice]);
             }
-            
         }
     }
 
