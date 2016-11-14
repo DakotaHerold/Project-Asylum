@@ -60,7 +60,7 @@ public class CharacterController : MonoBehaviour
             anim.SetFloat("Speed", Mathf.Abs(0.0f));
             return;
         }
-
+        anim.SetFloat("Speed", Mathf.Abs(moveX + moveY));
         GetComponent<Rigidbody2D>().velocity=new Vector2(moveX * maxSpeed, moveY * maxSpeed);
 
 		if(moveX > 0 && !facingRight)
