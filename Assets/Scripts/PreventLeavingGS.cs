@@ -8,7 +8,7 @@ public class PreventLeavingGS: GameScript
 	public TextAsset keepGoingTxt;
 	public GenericTextView displayText;
 
-	public bool monologueDone=false;
+	public bool monologueDone=true;
 
 
 	// Use this for initialization

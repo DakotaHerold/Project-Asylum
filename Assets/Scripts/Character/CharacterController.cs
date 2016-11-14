@@ -43,7 +43,8 @@ public class CharacterController : MonoBehaviour
 
         if (anim.GetFloat("IdleDelay") > 0)
             anim.SetFloat("IdleDelay", anim.GetFloat("IdleDelay") - 0.1f);
-        else { 
+        else
+		{ 
             anim.SetFloat("IdleDelay", Random.Range(5f, 20.0f));
             anim.Play("IdleAnimating");
         }
@@ -56,7 +57,7 @@ public class CharacterController : MonoBehaviour
 			return;
 
         float moveX = Input.GetAxis("Horizontal");
-        Debug.Log(moveX);
+        //Debug.Log(moveX);
         if (Mathf.Abs(moveX) < 0.5f)
             moveX = 0;
         float moveY = Input.GetAxis("Vertical");

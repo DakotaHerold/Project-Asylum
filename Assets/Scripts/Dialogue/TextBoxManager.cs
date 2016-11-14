@@ -34,7 +34,7 @@ public class TextBoxManager : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        textBox.SetActive(false);
+        //textBox.SetActive(false);
 
         if(buttonPanel != null)
         {
