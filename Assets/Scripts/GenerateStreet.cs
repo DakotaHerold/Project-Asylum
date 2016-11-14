@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GenerateStreet : MonoBehaviour {
-
+public class GenerateStreet: MonoBehaviour
+{
     public GameObject prefab; 
     private BoxCollider2D trigger; 
 
@@ -10,15 +10,22 @@ public class GenerateStreet : MonoBehaviour {
     public float distanceBetween; 
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
         trigger = GetComponent<BoxCollider2D>();
         trigger.enabled = true;
         //width = GetComponentInChildren<BoxCollider2D>().size.x;
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
         //Debug.Log(width);
+	}
+
+	public bool didTrigger()
+	{
+		return !trigger.enabled;
 	}
 
     void OnTriggerEnter2D(Collider2D other)
@@ -27,9 +34,10 @@ public class GenerateStreet : MonoBehaviour {
         Vector3 newPos = transform.position;
         newPos.x += width + distanceBetween;  
         GameObject newStreet = Instantiate(prefab, newPos , transform.rotation) as GameObject;
-        newStreet.GetComponent<GenerateStreet>().prefab = prefab;
-        newStreet.GetComponent<GenerateStreet>().width = width;
-        newStreet.GetComponent<GenerateStreet>().distanceBetween = distanceBetween;
+		GenerateStreet genstreet=newStreet.GetComponentsInChildren<GenerateStreet>()[0];
+		genstreet.prefab = prefab;
+		genstreet.width = width;
+		genstreet.distanceBetween = distanceBetween;
     }
 
     void OnTriggerExit2D(Collider2D other)

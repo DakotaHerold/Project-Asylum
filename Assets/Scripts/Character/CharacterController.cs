@@ -44,7 +44,7 @@ public class CharacterController : MonoBehaviour
 			return;
 
         float moveX = Input.GetAxis("Horizontal");
-        Debug.Log(moveX);
+        //Debug.Log(moveX);
         if (Mathf.Abs(moveX) < 0.5f)
             moveX = 0;
         float moveY = Input.GetAxis("Vertical");
