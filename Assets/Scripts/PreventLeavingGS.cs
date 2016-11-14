@@ -26,7 +26,7 @@ public class PreventLeavingGS: GameScript
 
 	public override void Run()
 	{
-		if(genStreetScript.didTrigger())
+		if(genStreetScript!=null && genStreetScript.didTrigger())
 		{
 			//turn back
 			//...TODO
