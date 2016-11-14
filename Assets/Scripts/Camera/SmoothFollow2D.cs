@@ -21,7 +21,7 @@ public class SmoothFollow2D : MonoBehaviour
     void Update()
     {
     	if (target && followCamera)
-        {             
+        {
             Vector3 targetPos = target.position;
             //targetPos.y = targetPos.y - 0.6f; 
 
@@ -31,4 +31,10 @@ public class SmoothFollow2D : MonoBehaviour
             transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, dampTime);
         }
     }
+
+	public void setTarget(Transform t)
+	{
+		this.target=t;
+		print(this.target);
+	}
 }
