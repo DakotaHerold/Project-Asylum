@@ -3,9 +3,11 @@ using System.Collections;
 
 public class GameScript: MonoBehaviour
 {
+	protected bool didPlay=false;
+
 	//called by the ScriptTrigger
 	public virtual void Run()
 	{
-		print("Default functionality");
+		print("GameScript - Default functionality wasn't overridden.");
 	}
 }
