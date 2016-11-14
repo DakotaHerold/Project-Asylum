@@ -26,17 +26,7 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 	// Update is called once per frame
 	void Update () {
 
-        //if (Input.GetKeyDown(KeyCode.Q))
-        //{
-        //    string[] items = new string[]
-        //    {
-        //      "Item1", "Item2", "Item3", "Item4"
-        //    };
-        //    ReinitializeButtons(items);
-        //    return; 
-        //}
-
-        if (!buttonsActive)
+        if(!buttonsActive)
         {
             return;
         }
@@ -48,10 +38,7 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
         else
         {
-            if (buttons[selectedIndex] != null)
-            {
-                buttons[selectedIndex].Select();
-            }
+            buttons[selectedIndex].Select();
         }
         
 
@@ -154,39 +141,5 @@ public class CreateButtons : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         //buttons[selectedIndex].Select();
         buttonsActive = true; 
     }
-
-    public void ReinitializeButtons(string[] newChoices)
-    {
-        buttonsActive = false; 
-        foreach(Button b in buttons)
-        {
-            DestroyObject(b); 
-        }
-
-        choices = newChoices; 
-
-        for (int i = 0; i < choices.Length; ++i)
-        {
-            // create button
-            GameObject obj = Instantiate(buttonPrefab);
-            // attach to parent
-            obj.transform.SetParent(transform, false);
-            // set text
-            obj.GetComponentInChildren<Text>().text = choices[i];
-            // add on clicked event listener
-            Button button = obj.GetComponent<Button>();
-            int evaluationChoice = i;
-            button.onClick.AddListener(() => EvaluateChoice(evaluationChoice));
-            //button.OnPointerEnter.AddListener(() => SetSelectedIndex(int index));
-
-            //Add button objects for management 
-        }
-
-        // Sets references to active buttons 
-        buttons = GetComponentsInChildren<Button>();
-
-        //buttons[selectedIndex].Select();
-        buttonsActive = true;
-    }
-
+    
 }
