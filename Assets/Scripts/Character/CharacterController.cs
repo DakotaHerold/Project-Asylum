@@ -8,7 +8,7 @@ public class CharacterController : MonoBehaviour
     public float maxSpeed;
     public float minSpeed;
 	public bool canMove = true;
-	public bool ignoreInput = false;
+	public bool ignoreInput = true;
 
     public GameObject TextNotifier; 
 
