@@ -16,7 +16,8 @@ public class CharacterController : MonoBehaviour
     private bool facingRight = true;
 
     private List<string> inventory;
-    private NotifyText notification; 
+    private NotifyText notification;
+    private int DP; 
 
     Animator anim;
     // Use this for initialization
@@ -124,5 +125,15 @@ public class CharacterController : MonoBehaviour
             notification.StartCoroutine(notification.UpdateText(obj + " removed from inventory"));
         }
         inventory.Add(obj);
+    }
+
+    public void IncrementDP(int num)
+    {
+        DP += num; 
+    }
+
+    public void DecrementDP(int num)
+    {
+        DP -= num;
     }
 }
