@@ -4,5 +4,8 @@ using System.Collections;
 public class GameScript: MonoBehaviour
 {
 	//called by the ScriptTrigger
-	public virtual void Run(){}
+	public virtual void Run()
+	{
+		print("Default functionality");
+	}
 }
