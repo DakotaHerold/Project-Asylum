@@ -49,35 +49,35 @@ public class TestGameScript: GameScript
 		if(didPlay)
 			return;
 
+		controller.ignoreInput=true;
+
 		//tell the user what's up
-		ReloadScript(textFile);
 		currentLine=startLine1;
+		ReloadScript(textFile);
 
 		//move the player a bit
-		GameObject player=GameObject.Find("Player");
-		CharacterController player2d=player.GetComponent<CharacterController>();
-		if(player!=null) //&& player2d!=null)
-		{
-			player2d.Move(-30f, 0f);
-			player2d.Move(-30f, 0);
-			player2d.Move(-1f, 0);
+		controller.canMove=true;
+		controller.Move(-2f, 3f);
+		controller.canMove=false;
+		//	player2d.Move(-30f, 0);
+		//	player2d.Move(-1f, 0);
 			//player2d.Move(-30f, false, false);
 			//player2d.Move(-30, false, false);
 
-			print(player.GetComponent<Rigidbody2D>().velocity);
-		}
-		else
+		print(player.GetComponent<Rigidbody2D>().velocity);
+
+		/*else
 		{
 			Rigidbody2D rb=player.GetComponent<Rigidbody2D>();
 			//rb.AddForce(new Vector2(-30f, 0f), ForceMode2D.Force);
 			rb.velocity=new Vector2(-30f, rb.velocity.y);
 
 			print(rb.velocity);
-		}
+		}*/
 
 		//give the whole description
-		ReloadScript(textFile);
 		currentLine=startLine2;
+		ReloadScript(textFile);
 
 		//set a flag of some sort
 		didPlay=true;
@@ -87,6 +87,8 @@ public class TestGameScript: GameScript
 
 		//anything else...
 		//...
+
+		controller.ignoreInput=false;	//unlock
 
 	//	print("end!");
 	}
@@ -175,6 +177,8 @@ public class TestGameScript: GameScript
 	{
 		if(newText != null)
 		{
+			textBox.SetActive(true);
+
 			textLines = new string[1];
 			textLines = (newText.text.Split('\n'));
 			isActive = true;
