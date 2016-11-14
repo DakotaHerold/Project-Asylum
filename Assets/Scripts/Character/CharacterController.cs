@@ -19,7 +19,6 @@ public class CharacterController : MonoBehaviour
     private NotifyText notification; 
 
     Animator anim;
-
     // Use this for initialization
     void Start ()
 	{
@@ -38,9 +37,21 @@ public class CharacterController : MonoBehaviour
 	
 	//}
 
+    void IdleDelayUpdate()
+    {
+
+        if (anim.GetFloat("IdleDelay") > 0)
+            anim.SetFloat("IdleDelay", anim.GetFloat("IdleDelay") - 0.1f);
+        else { 
+            anim.SetFloat("IdleDelay", Random.Range(5f, 20.0f));
+            anim.Play("IdleAnimating");
+        }
+    }
+
     void FixedUpdate()
     {
-		if(ignoreInput)
+        IdleDelayUpdate();
+        if (ignoreInput)
 			return;
 
         float moveX = Input.GetAxis("Horizontal");
