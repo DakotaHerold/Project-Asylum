@@ -1,51 +1,112 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.UI; 
+using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class TextBoxManager : MonoBehaviour {
 
+    // Player attributes
     public GameObject player;
+    private CharacterController controller;
 
+    // Text box attributes
     public GameObject textBox;
-
-    public Text theText; 
-
+    public Text uiText; 
     public TextAsset textFile;
-    public string[] textLines;
-
-    public GameObject buttonPanel;
-
-    public int currentLine;
-    //public int endAtLine; 
-
-    public bool isActive;
-
     
+    // Button attributes
+    public GameObject buttonPrefab;
+    public GameObject buttonPanel;
+    private Button[] buttons;
+    private bool buttonsActive = false;
+    private int selectedIndex = 0;
+    private bool hovering = false;
 
+    // Text typing attributes
+    public float textSpeed;
+    public bool isBoxActive;
+    private int currentLine;
+    //public int endAtLine; 
+    private string[] textLines;
     private bool isTyping = false;
     private bool cancelTyping = false;
 
-    public float textSpeed;
+    // Dialogue attribute
+    private DialogueContainer dialogue;
+    private int entryIndex = 0; 
 
-    private CharacterController controller;
-
-    private CreateButtons buttons; 
-
-    // Use this for initialization
+    // Used as soon as object is created
     void Start()
     {
-        //textBox.SetActive(false);
-
-        if(buttonPanel != null)
+        // Set entry index 
+        entryIndex = 0;
+        // Set controller reference 
+        if (player != null)
         {
-            buttons = buttonPanel.GetComponent<CreateButtons>(); 
+            controller = player.GetComponent<CharacterController>();
         }
+
+        // Parse JSON file to store in structs
+        dialogue = JsonUtility.FromJson<DialogueContainer>(textFile.text);  
+        
+    }
+
+    // Initialize the the script to begin working --- called on collision
+    void Initialize()
+    {
+        // Set starting line
+        currentLine = 0; 
+        // Set text lines to text property of dialogue entry 
+        textLines = dialogue.container[entryIndex].text;
+
+        // Create and store buttons if there are any
+        if (dialogue.container[entryIndex].choices.Length > 0)
+        {
+            buttons = new Button[dialogue.container[entryIndex].choices.Length]; 
+            for (int i = 0; i < dialogue.container[entryIndex].choices.Length; ++i)
+            {
+                // create button
+                GameObject obj = Instantiate(buttonPrefab);
+                // attach to parent, in this case, the button panel 
+                obj.transform.SetParent(buttonPanel.transform, false);
+                // set text of button 
+                obj.GetComponentInChildren<Text>().text = dialogue.container[entryIndex].choices[i];
+                // add on clicked event listener
+                Button button = obj.GetComponent<Button>();
+                int buttonIndex = i; 
+                button.onClick.AddListener(() => EvaluateChoice(buttonIndex));
+
+                // disable button since it's not used immediately 
+                button.gameObject.SetActive(false);
+
+                // Manage buttons 
+                buttons[i] = button; 
+            }
+            
+            buttonsActive = true; 
+        }
+
+
+        // Set controller and disable character movement
+        if (controller != null)
+        {
+            controller.canMove = false;
+        }
+
+
+        //uiText.text = textLines[currentLine]; ---- Automatically displays completed line 
+
+        // Set box to active so it begins displaying 
+        isBoxActive = true;
+
+        // Begin coroutine to start typing text
+        StartCoroutine(TextScoll(textLines[currentLine]));
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!isActive)
+        if(!isBoxActive)
         {
             return;
         }
@@ -53,55 +114,32 @@ public class TextBoxManager : MonoBehaviour {
         ///StartCoroutine(TextScoll(textLines[currentLine]));
         //if (currentLine < textLines.Length)
         //{
-        //    theText.text = textLines[currentLine];
+        //    uiText.text = textLines[currentLine];
         //}
+
+        // Proceed through text on key press 
         if (Input.GetKeyDown(KeyCode.X))
         {
-            if (!isTyping)
-            {
-                currentLine += 1;
-
-                
-                //At End?
-                if (currentLine > textLines.Length - 1 && buttons == null)
-                {
-                    controller.canMove = true;
-                    DisableTextBox();
-                }
-                else if (currentLine > textLines.Length - 2 && buttons != null)
-                {
-                    buttons.InitializeButtons();
-                    StartCoroutine(TextScoll(textLines[currentLine]));
-                    isActive = false; 
-                }
-                else
-                {
-                    StartCoroutine(TextScoll(textLines[currentLine]));
-                }
-            }
-            else if(isTyping && !cancelTyping)
-            {
-                cancelTyping = true; 
-            }
-
+            AdvanceLine(); 
         }
         
 
     }
 
+    // Text scrolling coroutine 
     private IEnumerator TextScoll (string lineOfText)
     {
         int letter = 0;
-        theText.text = "";
+        uiText.text = "";
         isTyping = true;
         cancelTyping = false; 
         while(isTyping && !cancelTyping && ( letter < lineOfText.Length - 1))
         {
-            theText.text += lineOfText[letter];
+            uiText.text += lineOfText[letter];
             letter += 1;
             yield return new WaitForSeconds(textSpeed);
         }
-        theText.text = lineOfText;
+        uiText.text = lineOfText;
         isTyping = false; 
     }
 
@@ -109,54 +147,129 @@ public class TextBoxManager : MonoBehaviour {
     {
         textBox.SetActive(!textBox.activeSelf); 
     }
-
-    public void EnableTextBox()
+    
+    private void AdvanceLine()
     {
-        textBox.SetActive(true);
-        isActive = true;
-
-        StartCoroutine(TextScoll(textLines[currentLine]));
-    }
-
-    public void DisableTextBox()
-    {
-        textBox.SetActive(false);
-        isActive = false;
-    }
-
-    public void ReloadScript(TextAsset newText)
-    {
-        if(newText != null)
+        if (!isTyping)
         {
-            textLines = new string[1];
-            textLines = (newText.text.Split('\n'));
-        }
-    }
+            currentLine += 1;
 
-    void Initialize()
+            // check for end of text in section 
+            if (currentLine > textLines.Length - 1)
+            {
+                controller.canMove = true;
+                textBox.SetActive(false);
+                isBoxActive = false;
+            }
+            // At last element, present choice if any 
+            else if (currentLine > textLines.Length - 2 && buttonsActive)
+            {
+                ToggleButtons();
+                //buttons[selectedIndex].Select();
+                StartCoroutine(TextScoll(textLines[currentLine]));
+                //currentLine += 1; 
+                //isBoxActive = false; 
+            }
+            else
+            {
+                // Continue typing and move to the newly updated current line 
+                StartCoroutine(TextScoll(textLines[currentLine]));
+            }
+        }
+        else if (isTyping && !cancelTyping)
+        {
+            cancelTyping = true;
+        }
+}    
+
+    // Enable buttons 
+    void ToggleButtons()
     {
-        if (textFile != null)
+        foreach(Button b in buttons)
         {
-            textLines = (textFile.text.Split('\n'));
+            b.gameObject.SetActive(!b.gameObject.activeSelf);
         }
-        if (player != null)
-        {
-            controller = player.GetComponent<CharacterController>();
-            controller.canMove = false;
-        }
-        //theText.text = textLines[currentLine];
-        isActive = true;
-        StartCoroutine(TextScoll(textLines[currentLine]));
+        buttonsActive = !buttonsActive; 
     }
 
+    // Evaluate button choices based on current dialogue entry 
+    void EvaluateChoice(int buttonIndex)
+    { 
+        // Hide all buttons 
+        ToggleButtons();
+        //string choice = buttons[selectedIndex].GetComponentInChildren<Text>().text;
+        //Debug.Log(choice);
+
+
+        string outcome = dialogue.container[entryIndex].outcomes[buttonIndex];
+        Debug.Log(buttonIndex);
+        Debug.Log(outcome);
+
+        // Check if there is a dialogue branch, if so reinitialize. Else add to inventory or decrement DP
+        for(int i = 0; i < dialogue.container.Length; ++i)
+        //foreach (DialogueContainer.DialogueEntry branch in dialogue.container)
+        {
+            if (dialogue.container[i].entry_name == outcome)
+            {
+                foreach(Button b in buttons)
+                {
+                    DestroyObject(b);
+                }
+                buttons = null; 
+                buttonsActive = false;
+                //selectedIndex = 0;
+                hovering = false;
+                textLines = null;
+                entryIndex = i;
+                Initialize();
+                break;
+            }
+            else if (outcome.Contains("DP+"))
+            {
+                outcome = outcome.Remove(outcome.IndexOf("DP+"), "DP+".Length);
+                int num = 0;
+                int.TryParse(outcome, out num);
+                controller.IncrementDP(num);
+
+                AdvanceLine();
+                break;
+            }
+            else if (outcome.Contains("DP-"))
+            {
+                outcome = outcome.Remove(outcome.IndexOf("DP-"), "DP-".Length);
+                int num = 0;
+                int.TryParse(outcome, out num);
+                controller.DecrementDP(num);
+
+                AdvanceLine();
+                break;
+            }
+            else if (outcome.Contains("item="))
+            {
+                outcome = outcome.Remove(outcome.IndexOf("item="), "item=".Length);
+                controller.AddToInventory(outcome);
+
+                AdvanceLine();
+                break;
+            }
+        }
+       
+        
+    }
+
+
+    // Collision functions 
     void OnTriggerEnter2D(Collider2D other)
     {
         textBox.SetActive(true);
-        Initialize(); 
+        Initialize();
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
+        entryIndex = 0;
         currentLine = 0; 
     }
+
+    
 }
