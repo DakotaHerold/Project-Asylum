@@ -15,7 +15,7 @@
         {
             "entry_name": "AngryConvo",
             "text": [ "You're right... Damn it.", "How could I be so stupid as to lose something so valuable. I'm not worthy of her anymore." ],
-            "choices": [ "'You should break up with them'", "'Everyone makes mistakes'" ],
+            "choices": [ "'You should break up with her'", "'Everyone makes mistakes'" ],
             "outcomes": [ "DP-1", "FeelBetter" ]
         },
         {
