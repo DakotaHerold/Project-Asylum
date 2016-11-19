@@ -66,22 +66,72 @@ public class TextBoxManager : MonoBehaviour {
             buttons = new Button[dialogue.container[entryIndex].choices.Length]; 
             for (int i = 0; i < dialogue.container[entryIndex].choices.Length; ++i)
             {
-                // create button
-                GameObject obj = Instantiate(buttonPrefab);
-                // attach to parent, in this case, the button panel 
-                obj.transform.SetParent(buttonPanel.transform, false);
-                // set text of button 
-                obj.GetComponentInChildren<Text>().text = dialogue.container[entryIndex].choices[i];
-                // add on clicked event listener
-                Button button = obj.GetComponent<Button>();
-                int buttonIndex = i; 
-                button.onClick.AddListener(() => EvaluateChoice(buttonIndex));
+                if (dialogue.container[entryIndex].requirements.Length > 0 && i < dialogue.container[entryIndex].requirements.Length)
+                {
+                    // No requirement
+                    if (dialogue.container[entryIndex].requirements[i] == null)
+                    {
+                        // create button
+                        GameObject obj = Instantiate(buttonPrefab);
+                        // attach to parent, in this case, the button panel 
+                        obj.transform.SetParent(buttonPanel.transform, false);
+                        // set text of button 
+                        obj.GetComponentInChildren<Text>().text = dialogue.container[entryIndex].choices[i];
+                        // add on clicked event listener
+                        Button button = obj.GetComponent<Button>();
+                        int buttonIndex = i;
+                        button.onClick.AddListener(() => EvaluateChoice(buttonIndex));
 
-                // disable button since it's not used immediately 
-                button.gameObject.SetActive(false);
+                        // disable button since it's not used immediately 
+                        button.gameObject.SetActive(false);
 
-                // Manage buttons 
-                buttons[i] = button; 
+                        // Manage buttons 
+                        buttons[i] = button;
+                    }
+                    // Has item so add choice
+                    else if (controller.HasItem(dialogue.container[entryIndex].requirements[i]))
+                    {
+                        // create button
+                        GameObject obj = Instantiate(buttonPrefab);
+                        // attach to parent, in this case, the button panel 
+                        obj.transform.SetParent(buttonPanel.transform, false);
+                        // set text of button 
+                        obj.GetComponentInChildren<Text>().text = dialogue.container[entryIndex].choices[i];
+                        // add on clicked event listener
+                        Button button = obj.GetComponent<Button>();
+                        int buttonIndex = i;
+                        button.onClick.AddListener(() => EvaluateChoice(buttonIndex));
+
+                        // disable button since it's not used immediately 
+                        button.gameObject.SetActive(false);
+
+                        // Manage buttons 
+                        buttons[i] = button;
+                    }
+                    else
+                    {
+                        buttons[i] = null; 
+                    }
+                }
+                else
+                {
+                    // create button
+                    GameObject obj = Instantiate(buttonPrefab);
+                    // attach to parent, in this case, the button panel 
+                    obj.transform.SetParent(buttonPanel.transform, false);
+                    // set text of button 
+                    obj.GetComponentInChildren<Text>().text = dialogue.container[entryIndex].choices[i];
+                    // add on clicked event listener
+                    Button button = obj.GetComponent<Button>();
+                    int buttonIndex = i;
+                    button.onClick.AddListener(() => EvaluateChoice(buttonIndex));
+
+                    // disable button since it's not used immediately 
+                    button.gameObject.SetActive(false);
+
+                    // Manage buttons 
+                    buttons[i] = button;
+                }
             }
             
             buttonsActive = true; 
@@ -189,7 +239,8 @@ public class TextBoxManager : MonoBehaviour {
     {
         foreach(Button b in buttons)
         {
-            b.gameObject.SetActive(!b.gameObject.activeSelf);
+            if (b != null)
+            { b.gameObject.SetActive(!b.gameObject.activeSelf); }
         }
         buttonsActive = !buttonsActive; 
     }

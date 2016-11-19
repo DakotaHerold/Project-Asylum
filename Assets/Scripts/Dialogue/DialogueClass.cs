@@ -12,6 +12,7 @@ public struct DialogueContainer
         public string entry_name; 
         public string[] text;
         public string[] choices;
+        public string[] requirements; 
         public string[] outcomes;
     }
 

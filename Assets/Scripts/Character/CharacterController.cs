@@ -132,6 +132,11 @@ public class CharacterController : MonoBehaviour
         
     }
 
+    public bool HasItem(string item)
+    {
+        return inventory.Contains(item); 
+    }
+
     public void IncrementDP(int num)
     {
         DP += num; 

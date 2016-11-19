@@ -3,25 +3,29 @@
         {
             "entry_name": "Start",
             "text": [ "Oh no...", "The ring... ", "I...", "I... spent all of my money on that ring...", "The arrangements for the restaurant...", "The band...", "Everything was ready...", "Everything was in place... for this day and... ", "I lost it.", "What am I going to do?", "Hell, it'll take me years to make enough money", "to buy another decent ring... ", "Ugh... what in hell am I gonna do?...", "Have you seen my ring?" ],
-            "choices": [ "'Yes'", "'No, I haven't seen it'", "The ring doesn't matter",  "'it's hopeless, move on'"],
+            "choices": [ "'Yes'", "'No, I haven't seen it'", "The ring doesn't matter", "'it's hopeless, move on'" ],
+            "requirements":  ["key"],
             "outcomes": [ "DP-1,ReturnedRing", "DP-1", "DP+1", "AngryConvo" ]
         },
         {
             "entry_name": "ReturnedRing",
             "text": [ "Oh thank you so much, now I can propose.", "You have assuaged my worst fears!", "You are a lifesaver.", "Whatever could I do to thank you?", "... Oh! I know, do you like <insert band name here> (You do.)", "I have this ticket to their concert tomorrow night (you like concerts)." ],
             "choices": [ "Take it", "Don't take it" ],
+            "requirements":  [],
             "outcomes": [ "DP+5", "DP-1" ]
         },
         {
             "entry_name": "AngryConvo",
             "text": [ "You're right... Damn it.", "How could I be so stupid as to lose something so valuable. I'm not worthy of her anymore." ],
             "choices": [ "'You should break up with her'", "'Everyone makes mistakes'" ],
+            "requirements":  [],
             "outcomes": [ "DP-1", "FeelBetter" ]
         },
         {
             "entry_name": "FeelBetter",
             "text": [ "You're Right!", "I can't give up hope.", "Thank you for your words of wisdom, miss." ],
             "choices": [ "'You're welcome'" ],
+            "requirements":  [],
             "outcomes": [ "DP+5" ]
         }
     ]
