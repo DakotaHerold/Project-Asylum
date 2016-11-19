@@ -13,6 +13,7 @@ public class TextBoxManager : MonoBehaviour {
     public GameObject textBox;
     public Text uiText; 
     public TextAsset textFile;
+    private bool canClose = true; 
     
     // Button attributes
     public GameObject buttonPrefab;
@@ -155,7 +156,7 @@ public class TextBoxManager : MonoBehaviour {
             currentLine += 1;
 
             // check for end of text in section 
-            if (currentLine > textLines.Length - 1)
+            if (currentLine > textLines.Length - 1 && canClose)
             {
                 controller.canMove = true;
                 textBox.SetActive(false);
@@ -165,12 +166,13 @@ public class TextBoxManager : MonoBehaviour {
             else if (currentLine > textLines.Length - 2 && buttonsActive)
             {
                 ToggleButtons();
+                canClose = false; 
                 //buttons[selectedIndex].Select();
                 StartCoroutine(TextScoll(textLines[currentLine]));
                 //currentLine += 1; 
                 //isBoxActive = false; 
             }
-            else
+            else if(canClose)
             {
                 // Continue typing and move to the newly updated current line 
                 StartCoroutine(TextScoll(textLines[currentLine]));
@@ -198,8 +200,7 @@ public class TextBoxManager : MonoBehaviour {
         // Hide all buttons 
         ToggleButtons();
         //string choice = buttons[selectedIndex].GetComponentInChildren<Text>().text;
-        //Debug.Log(choice);
-
+        //Debug.Log(choice); 
 
         string OutcomeParent = dialogue.container[entryIndex].outcomes[buttonIndex];
         string[] outcomes = OutcomeParent.Split(',');
@@ -244,7 +245,7 @@ public class TextBoxManager : MonoBehaviour {
             }
         }
 
-
+        bool shouldAdvanceLine = true; 
         // Check if there is a dialogue branch, if so reinitialize. Else add to inventory or decrement DP
         for (int i = 0; i < dialogue.container.Length; ++i)
         //foreach (DialogueContainer.DialogueEntry branch in dialogue.container)
@@ -263,14 +264,16 @@ public class TextBoxManager : MonoBehaviour {
                     hovering = false;
                     textLines = null;
                     entryIndex = i;
+                    shouldAdvanceLine = false; 
                     Initialize();
                     break;
                 }
             }
             
         }
-
-        AdvanceLine(); 
+        canClose = true;
+        if (shouldAdvanceLine)
+        { AdvanceLine(); }
         
     }
 
