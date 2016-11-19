@@ -125,7 +125,11 @@ public class CharacterController : MonoBehaviour
         {
             notification.StartCoroutine(notification.UpdateText(obj + " removed from inventory"));
         }
-        inventory.Add(obj);
+        if(inventory.Contains(obj))
+        {
+            inventory.Remove(obj);
+        }
+        
     }
 
     public void IncrementDP(int num)

@@ -201,59 +201,76 @@ public class TextBoxManager : MonoBehaviour {
         //Debug.Log(choice);
 
 
-        string outcome = dialogue.container[entryIndex].outcomes[buttonIndex];
-        Debug.Log(buttonIndex);
-        Debug.Log(outcome);
+        string OutcomeParent = dialogue.container[entryIndex].outcomes[buttonIndex];
+        string[] outcomes = OutcomeParent.Split(',');
+        //Debug.Log(buttonIndex);
+       
 
-        // Check if there is a dialogue branch, if so reinitialize. Else add to inventory or decrement DP
-        for(int i = 0; i < dialogue.container.Length; ++i)
-        //foreach (DialogueContainer.DialogueEntry branch in dialogue.container)
+        // Apply effects 
+        for (int i = 0; i < outcomes.Length; ++i)
         {
-            if (dialogue.container[i].entry_name == outcome)
+            Debug.Log(outcomes[i]);
+            if (outcomes[i].Contains("DP+"))
             {
-                foreach(Button b in buttons)
-                {
-                    DestroyObject(b);
-                }
-                buttons = null; 
-                buttonsActive = false;
-                //selectedIndex = 0;
-                hovering = false;
-                textLines = null;
-                entryIndex = i;
-                Initialize();
-                break;
-            }
-            else if (outcome.Contains("DP+"))
-            {
-                outcome = outcome.Remove(outcome.IndexOf("DP+"), "DP+".Length);
+                outcomes[i] = outcomes[i].Remove(outcomes[i].IndexOf("DP+"), "DP+".Length);
                 int num = 0;
-                int.TryParse(outcome, out num);
+                int.TryParse(outcomes[i], out num);
                 controller.IncrementDP(num);
 
-                AdvanceLine();
-                break;
+                // AdvanceLine();
             }
-            else if (outcome.Contains("DP-"))
+            else if (outcomes[i].Contains("DP-"))
             {
-                outcome = outcome.Remove(outcome.IndexOf("DP-"), "DP-".Length);
+                outcomes[i] = outcomes[i].Remove(outcomes[i].IndexOf("DP-"), "DP-".Length);
                 int num = 0;
-                int.TryParse(outcome, out num);
+                int.TryParse(outcomes[i], out num);
                 controller.DecrementDP(num);
 
-                AdvanceLine();
-                break;
+                //AdvanceLine();
             }
-            else if (outcome.Contains("item="))
+            else if (outcomes[i].Contains("item+"))
             {
-                outcome = outcome.Remove(outcome.IndexOf("item="), "item=".Length);
-                controller.AddToInventory(outcome);
+                outcomes[i] = outcomes[i].Remove(outcomes[i].IndexOf("item+"), "item+".Length);
+                controller.AddToInventory(outcomes[i]);
 
-                AdvanceLine();
-                break;
+                //AdvanceLine();
+            }
+            else if (outcomes[i].Contains("item-"))
+            {
+                outcomes[i] = outcomes[i].Remove(outcomes[i].IndexOf("item-"), "item-".Length);
+                controller.RemoveFromInventory(outcomes[i]);
+
+                //AdvanceLine();
             }
         }
-       
+
+
+        // Check if there is a dialogue branch, if so reinitialize. Else add to inventory or decrement DP
+        for (int i = 0; i < dialogue.container.Length; ++i)
+        //foreach (DialogueContainer.DialogueEntry branch in dialogue.container)
+        {
+            for (int j = 0; j < outcomes.Length; ++j)
+            {
+                if (dialogue.container[i].entry_name == outcomes[j])
+                {
+                    foreach (Button b in buttons)
+                    {
+                        DestroyObject(b);
+                    }
+                    buttons = null;
+                    buttonsActive = false;
+                    //selectedIndex = 0;
+                    hovering = false;
+                    textLines = null;
+                    entryIndex = i;
+                    Initialize();
+                    break;
+                }
+            }
+            
+        }
+
+        AdvanceLine(); 
         
     }
 

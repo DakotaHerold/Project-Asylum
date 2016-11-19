@@ -4,7 +4,7 @@
             "entry_name": "Start",
             "text": [ "Oh no...", "The ring... ", "I...", "I... spent all of my money on that ring...", "The arrangements for the restaurant...", "The band...", "Everything was ready...", "Everything was in place... for this day and... ", "I lost it.", "What am I going to do?", "Hell, it'll take me years to make enough money", "to buy another decent ring... ", "Ugh... what in hell am I gonna do?...", "Have you seen my ring?" ],
             "choices": [ "'Yes'", "'No, I haven't seen it'", "The ring doesn't matter",  "'it's hopeless, move on'"],
-            "outcomes": [ "ReturnedRing", "DP-1", "DP+1", "AngryConvo" ]
+            "outcomes": [ "DP-1,ReturnedRing", "DP-1", "DP+1", "AngryConvo" ]
         },
         {
             "entry_name": "ReturnedRing",
